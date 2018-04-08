@@ -1,0 +1,59 @@
+The first column contains the index number for lines[]
+The second column contains the timer in seconds/minutes when the song starts 
+assuming it takes the system 3 seconds to start running
+ParagraphFly
+[0] 03 There was an old lady who swallowed a fly ending at 
+[1] 06 I don't know why she swallowed a fly - perhaps she'll die! 
+ParagraphSpider
+[2] 10  There was an old lady who swallowed a spider, 
+[3] 12 That wriggled and giggled and tiggled inside her; 
+[4] 15 She swallowed the spider to catch the fly; 
+[5] 17 But I don't know why she swallowed the fly - Perhaps she'll die! 
+ParagraphBird
+[6] 22 There was an old lady who swallowed a bird; 
+[7] 24 How absurd to swallow a bird. 
+[8] 27 She swallowed the bird to catch the spider, 
+[9] 29 That wriggled and giggled and tiggled inside her;  
+[10] 32 She swallowed the spider to catch the fly; 
+[11] 34 But I don't know why she swallowed the fly - Perhaps she'll die! 
+ParagraphCat
+[12] 38 There was an old lady who swallowed the cat; 
+[13] 42 Imagine that she swallowed the cat! 
+[14] 44 She swallowed the cat to catch the bird, 
+[15] 46 She swallowed the bird to catch the spider, 
+[16] 48 That wriggled and giggled and tiggled inside her; 
+[17] 51 She swallowed the spider to catch the fly; 
+[18] 52 But I don't know why she swallowed the fly - Perhaps she'll die! 
+ParagraphDog
+[19] 57 There was an old lady who swallowed a dog; 
+[20] 59 What a hog, to swallow a dog; 1:02
+[21] 1:04 She swallowed the dog to catch the cat, 
+[22] She swallowed the cat to catch the bird, 1:06
+[23] She swallowed the bird to catch the spider, 1.08
+[24] That wriggled and giggled and tiggled inside her; 1.10
+[25] She swallowed the spider to catch the fly; 1.13
+[26] But I don't know why she swallowed a fly - Perhaps she'll die! (1.17)
+ParagraphGoat
+[27] 1:18 There was an old lady who swallowed a goat, 
+[28] 1:21Just opened the throat and swallowed the goat 
+[29] 1.23 She swallowed the goat to catch the dog 
+[30] 1.25 She swallowed the dog to catch the cat, 
+[31] 1.27 She swallowed the cat to catch the bird, 
+[32] 1.29 She swallowed the bird to catch the spider, 
+[33] 1.31 That wriggled and giggled and tiggled inside her; 
+[34] 1.33 She swallowed the spider to catch the fly; 
+[35] 1.35 But I don't know why she swallowed a fly - Perhaps she'll die! 
+ParagraphCow
+[36] 1.41  There was an old lady who swallowed a cow, 
+[37] 1:44 I don't know how she swallowed the cow; 
+[38] 1.46 She swallowed the cow to catch the goat, 
+[39] 1.48 She swallowed the goat to catch the dog, 
+[40] 1.50 She swallowed the dog to catch the cat, 
+[41] 1.52 She swallowed the cat to catch the bird, 
+[42] 1.54 She swallowed the bird to catch the spider, 
+[43] 1.56 That wriggled and giggled and tiggled inside her; 
+[44] 1.59 She swallowed the spider to catch the fly; 
+[45] 2.02 I don't know why she swallowed a fly - Perhaps she'll die! 
+ParagraphHorse
+[46] 2.07 There was an old lady who swallowed a horse...  
+[47] 2.10 She's dead, of course!  
