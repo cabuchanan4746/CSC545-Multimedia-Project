@@ -1,7 +1,13 @@
-import processing.sound.*;
+// CSC545 Group Project - Indigo Group - McKenzie Riley, Veronia McGehee, Carey Buchanan, Melissa Bakke
+// This program turns the nursery rhyme "There Was An Old Lady" into a multimedia driven applcation.
+// A play all button and buttons for each verse are displayed. Upon clicking on a button, audio is played,
+// text is displayed, and the images in the play all button change per verse. The stop button stops all activity 
+// and allows another button to be clicked. Pressing spacebar pauses/unpauses the program.
 
-PFont font;
-PFont smallFont;
+import processing.sound.*;
+PImage background;
+PFont font, smallFont, bold, titleFont;
+String title, verse, play_all;
 String fname = "ThereWasAnOldLady.txt";
 boolean paused = false, playAll = false, playFly = false, playSpider = false, playBird = false, playCat = false, 
   playDog = false, playGoat = false, playCow = false, playHorse = false, stop = false, playing = false;
@@ -17,10 +23,8 @@ String[] lines;
 String[] flyLines = new String[2], spiderLines = new String[4], birdLines = new String[6], 
   catLines= new String [7], dogLines = new String [8], goatLines= new String[9], 
   cowLines= new String[10], horseLines = new String [2];
-int f=0, s=0, b=0, c=0, d=0, g =0, w=0, h=0; //this will serve as index for the above arrays
-//timings to display each sentence in seconds. These timings reflect the time in the song when the sentence should appear
-//The story has been partitioned in 8 paragraphs separated by an empty line. The starting time of each line 
-//Paragraph arrays used to play individual verses
+// Timings to display each sentence in seconds. These timings reflect the time in the song when the sentence should appear
+// Paragraph arrays used to play individual verses
 int []  paragraphFly = {2, 5, 9}, paragraphSpider = {9, 11, 14, 16, 20}, paragraphBird = {21, 23, 26, 28, 31, 33, 38}, 
   paragraphCat = {38, 41, 43, 45, 47, 50, 52, 56}, paragraphDog = {56, 59, 61, 64, 66, 68, 70, 73, 77}, 
   paragraphGoat = {77, 80, 83, 84, 86, 88, 90, 93, 95, 99}, 
@@ -36,12 +40,16 @@ int[] allSentenceTimings = {0, 5, 9,
                             126, 129, 132};
 SoundFile file;
 int startTime, currentIndex = 0, currentTime = 0, startButtonTime = 0, currentPlayTime = 0;
-
+int pausedTime = 0;
 //Images:
-PImage[] img = new PImage[9];
+PImage[] img = new PImage[10];
+PImage imgStop;
+// Global image index used to set correct image in playall button during play, default 8 (old lady)
+int globalImageIndex = 8;
 
 void setup() {
   size(1000, 700);
+  background = loadImage("background.jpg");
   startTime = millis()/1000;
   //the following block is just setting up the coordinates for each button's position so the screen can be resized if needed
   rectMode(CENTER);
@@ -70,54 +78,54 @@ void setup() {
   stopY = spaceBetweenButtonsY * 7;
 
   // Create some fonts
-  font = createFont("Baskerville", 38);
+  font = createFont("Baskerville-SemiBold", 34);
   smallFont = createFont("Baskerville", 18);
+  bold = createFont("Baskerville-SemiBoldItalic", 24);
+  titleFont = createFont("Baskerville-Bold", 44);
 
   // Add lines to array from file
   lines = loadStrings(fname);
   //separate lines into each animal's paragraph
-  //print("Lines: ");
-  //println(lines);
   arrayCopy(lines, 0, flyLines, 0, 2); //source, index,  destination, index,  length
-  //print("Fly: ");
-  //println(flyLines);
   arrayCopy(lines, 3, spiderLines, 0, 4);
-  //print("Spider: ");
-  //println(spiderLines);
   arrayCopy(lines, 8, birdLines, 0, 6);
-  //print("Bird: ");
-  //println(birdLines);
   arrayCopy(lines, 15, catLines, 0, 7);
-  //print("Cat: ");
-  //println(catLines);
   arrayCopy(lines, 23, dogLines, 0, 8);
-  //print("Dog: ");
-  //println(dogLines);
   arrayCopy(lines, 32, goatLines, 0, 9);
-  //print("Goat: ");
-  //println(goatLines);
   arrayCopy(lines, 42, cowLines, 0, 10);
-  //print("Cow: ");
-  //println(cowLines);
   arrayCopy(lines, 53, horseLines, 0, 2);
-  //print("Horse: ");
-  //println(horseLines);
 
   // Load the soundfile from the /data folder and play it back
   file = new SoundFile(this, "There_Was_An_Old_Lady.mp3");
-  //file.play();
+  // Normal rate usually 0, for this file 0.5 is normal rate
   file.rate(0.5);
   file.amp(0.5);
 }//end setup
 
 void draw() {
+  // Continuoulsy gets current time
   currentTime = millis()/1000;
+  // Current play time used to keep track of location in audio
   currentPlayTime = currentTime - startButtonTime;
-  background(backgroundColor);
+  background.resize(width,height);
+  // Set background image
+  background(background); 
+  title = "There Was An Old Lady Who Swallowed A Fly";
+  textFont(bold);
+  play_all = "Click here to play all!";
+  verse = "Click each button to hear a different verse";
+  fill(0,255,0);
+  textFont(titleFont);
+  text(title, 500, 35);
+  fill(0);
+  textFont(bold);
+  text(verse, 500, 213);
+  text(play_all, playAllX+buttonSideSize/1.2, playAllY+230);
+  
   //draw temporary basic rectacgles that will become buttons
   fill(strokeColor);
-  // Button borders green
-  stroke(0, 255, 0);
+  // Button borders cyan
+  stroke(0, 255, 255);
   strokeWeight(5);
   rectMode(CORNER);
   rect(playAllX, playAllY, 200, 200); //7 is for rounded corners
@@ -129,11 +137,9 @@ void draw() {
   rect(goatX, goatY, buttonSideSize, buttonSideSize);
   rect(cowX, cowY, buttonSideSize, buttonSideSize);
   rect(horseX, horseY, buttonSideSize, buttonSideSize);
-  fill(255, 0, 0);
-  rect(stopX, stopY, buttonSideSize, buttonSideSize, 7);
-  fill(0);
-  textFont(font);
-  text("STOP", stopX+buttonSideSize/2, stopY + 65);
+  noFill();
+  noStroke();
+  rect(stopX, stopY, buttonSideSize, buttonSideSize);
 
   // Settings for text
   textFont(font);
@@ -142,83 +148,56 @@ void draw() {
   textFont(smallFont);
   //text("Seconds passed: " + currentPlayTime, 100, height-5); //for coordinating elements timing
 
-  //IMAGES:
+  // Load images array and set correct image for each button
   img[0] = loadImage("flyE.png");
-  img[0].loadPixels();
   image(img[0], flyX, flyY, buttonSideSize, buttonSideSize);
   img[1] = loadImage("spiderE.png");
-  img[1].loadPixels();
   image(img[1], spiderX, spiderY, buttonSideSize, buttonSideSize);
   img[2] = loadImage("birdE.png");
-  img[2].loadPixels();
   image(img[2], birdX, birdY, buttonSideSize, buttonSideSize);
   img[3] = loadImage("catE.png");
-  img[3].loadPixels();
   image(img[3], catX, catY, buttonSideSize, buttonSideSize);
   img[4] = loadImage("dogE.png");
-  img[4].loadPixels();
   image(img[4], dogX, dogY, buttonSideSize, buttonSideSize);
   img[5] = loadImage("goatE.png");
-  img[5].loadPixels();
   image(img[5], goatX, goatY, buttonSideSize, buttonSideSize);
-  img[6] = loadImage("horseE.png");
-  img[6].loadPixels();
-  image(img[6], horseX, horseY, buttonSideSize, buttonSideSize);
-  img[7] = loadImage("cowE.png");
-  img[7].loadPixels();
-  image(img[7], cowX, cowY, buttonSideSize, buttonSideSize);
+  img[6] = loadImage("cowE.png");
+  image(img[6], cowX, cowY, buttonSideSize, buttonSideSize);
+  img[7] = loadImage("horseE.png");
+  image(img[7], horseX, horseY, buttonSideSize, buttonSideSize);
   img[8] = loadImage("ladyE.png");
-  img[8].loadPixels();
-  image(img[8], playAllX, playAllY, 200, 200);
+  image(img[globalImageIndex], playAllX, playAllY, 200, 200);
+  img[9] = loadImage("graveE.png");
+  imgStop = loadImage("stop_sign.png");
+  image(imgStop, stopX, stopY, buttonSideSize, buttonSideSize);
 
+  // Check booleans for correct button actions
   if (playAll) {
     // Call playVerse method, pass timing array, text array, and button boolean
     playVerse(allSentenceTimings, lines, playAll);
   } else if (playFly) {
     playVerse(paragraphFly, flyLines, playFly);
-    img[8] = loadImage("flyE.png");
-    img[8].loadPixels();
-    image(img[8], playAllX, playAllY, 200, 200);
   } else if (playSpider) {
     playVerse(paragraphSpider, spiderLines, playSpider);
-    img[8] = loadImage("spiderE.png");
-    img[8].loadPixels();
-    image(img[8], playAllX, playAllY, 200, 200);
   } else if (playBird) {
     playVerse(paragraphBird, birdLines, playBird);
-    img[8] = loadImage("birdE.png");
-    img[8].loadPixels();
-    image(img[8], playAllX, playAllY, 200, 200);
   } else if (playCat) {
     playVerse(paragraphCat, catLines, playCat);
-    img[8] = loadImage("catE.png");
-    img[8].loadPixels();
-    image(img[8], playAllX, playAllY, 200, 200);
   } else if (playDog) {
     playVerse(paragraphDog, dogLines, playDog);
-    img[8] = loadImage("dogE.png");
-    img[8].loadPixels();
-    image(img[8], playAllX, playAllY, 200, 200);
   } else if (playGoat) {
     playVerse(paragraphGoat, goatLines, playGoat);
-    img[8] = loadImage("goatE.png");
-    img[8].loadPixels();
-    image(img[8], playAllX, playAllY, 200, 200);
   } else if (playCow) {
     playVerse(paragraphCow, cowLines, playCow);
-    img[8] = loadImage("cowE.png");
-    img[8].loadPixels();
-    image(img[8], playAllX, playAllY, 200, 200);
   } else if (playHorse) {
     playVerse(paragraphHorse, horseLines, playHorse);
-    img[8] = loadImage("horseE.png");
-    img[8].loadPixels();
-    image(img[8], playAllX, playAllY, 200, 200);
   } else if (stop) {
-    // If stop boolean is toggle, stop audio
+    // If stop boolean is toggled, stop audio
     file.stop();
     // Toggle playing boolean so another button can be clicked
     playing = false;
+    //Default - old lady
+    globalImageIndex = 8;
   } else {
     // Lady image is default for play all button
     img[8] = loadImage("ladyE.png");
@@ -227,8 +206,11 @@ void draw() {
   }
 }//end draw()
 
+// This method checks conditions to play audio in correct position, 
+// display correct text for the verse, change images in play all button during play,
+// and stop at appropriate place
 void playVerse(int[] verseTimes, String[] verseLines, boolean verseFlag) {
-  // Set text color
+  // Set text color for verse text display
   fill(255);
   // Set text font
   textFont(font);
@@ -237,8 +219,32 @@ void playVerse(int[] verseTimes, String[] verseLines, boolean verseFlag) {
   // ( - verseTimes[0] zeros out value to account for starting point - most verses do not start at 0)
   if (currentIndex < verseTimes.length - 1 && currentPlayTime >= (verseTimes[currentIndex] - verseTimes[0]) 
   && currentPlayTime < (verseTimes[currentIndex + 1] - verseTimes[0])) {
+    // Parse current line into words array
+    String[] words = verseLines[currentIndex].split(" ");
+    // Get the last word in the array
+    String word = words[words.length-1];
+    // Check the word and change image accordingly
+    if (word.contains("fly")) {
+      globalImageIndex = 0;
+    } else if (word.contains("spider")) {
+      globalImageIndex = 1;
+    } else if (word.contains("bird")) {
+      globalImageIndex = 2;
+    } else if (word.contains("cat")) {
+      globalImageIndex = 3;
+    } else if (word.contains("dog")) {
+      globalImageIndex = 4;
+    } else if (word.contains("goat")) {
+      globalImageIndex = 5;
+    } else if (word.contains("cow")) {
+      globalImageIndex = 6;
+    } else if (word.contains("horse")) {
+      globalImageIndex = 7;
+    } else if (word.contains("course")) {
+      globalImageIndex = 9;
+    }
     // Display text line on canvas
-    text(verseLines[currentIndex], width/2, height-40);
+    text(verseLines[currentIndex], width/2, height-30);
   } else if (currentIndex < verseTimes.length) { 
     // Increment index to display next line
     currentIndex++;
@@ -251,6 +257,8 @@ void playVerse(int[] verseTimes, String[] verseLines, boolean verseFlag) {
     file.stop();
     // Set playing boolean to false allowing another button to be clicked
     playing = false;
+    // Set image to default lady image
+    globalImageIndex = 8;
   }
 }
 
@@ -274,6 +282,7 @@ void mouseClicked() {
       // Toggle boolean to true
       playAll = true;
       playing = true;
+      globalImageIndex = 8;
       // Setting current index to 0 ensures future button clicks start from beginning
       currentIndex = 0;
       // Play file from beginning
@@ -283,6 +292,7 @@ void mouseClicked() {
       playFly = true;
       playing = true;
       currentIndex = 0;
+      globalImageIndex = 0;
       // Cue the correct location
       file.cue(paragraphFly[0]);
       // Play audio file
@@ -291,41 +301,49 @@ void mouseClicked() {
       playSpider = true;
       playing = true;
       currentIndex = 0;
+      globalImageIndex = 1;
       file.cue(paragraphSpider[0]);
       file.play();
     } else if (mouseX > birdX && mouseX < birdX + buttonSideSize && mouseY > birdY && mouseY < birdY + buttonSideSize) {
       playBird = true;
       playing = true;
       currentIndex = 0;
+      globalImageIndex = 2;
       file.cue(paragraphBird[0]);
       file.play();
     } else if (mouseX > catX && mouseX < catX + buttonSideSize && mouseY > catY && mouseY < catY + buttonSideSize) {
       playCat = true;
       playing = true;
       currentIndex = 0;
+      globalImageIndex = 3;
       file.cue(paragraphCat[0]);
       file.play();
     } else if (mouseX > dogX && mouseX < dogX + buttonSideSize && mouseY > dogY && mouseY < dogY + buttonSideSize) {
       playDog = true;
       playing = true;
+      currentIndex = 0;
+      globalImageIndex = 4;
       file.cue(paragraphDog[0]);
       file.play();
     } else if (mouseX > goatX && mouseX < goatX + buttonSideSize && mouseY > goatY && mouseY < goatY + buttonSideSize) {
       playGoat = true;
       playing = true;
       currentIndex = 0;
+      globalImageIndex = 5;
       file.cue(paragraphGoat[0]);
       file.play();
     } else if (mouseX > cowX && mouseX < cowX + buttonSideSize && mouseY > cowY && mouseY < cowY + buttonSideSize) {
       playCow = true;
       playing = true;
       currentIndex = 0;
+      globalImageIndex = 6;
       file.cue(paragraphCow[0]);
       file.play();
     } else if (mouseX > horseX && mouseX < horseX + buttonSideSize && mouseY > horseY && mouseY < horseY + buttonSideSize) {
       playHorse = true;
       playing = true;
       currentIndex = 0;
+      globalImageIndex = 7;
       file.cue(paragraphHorse[0]);
       file.play();
     } 
@@ -345,14 +363,28 @@ void mouseClicked() {
 }
 
 void keyReleased() {
-  // Space bar pauses and resumes reading
+  // Space bar pauses and resumes
   if (key == ' ') {
     if (paused) {
+      // Start draw loop
       loop();
+      // Toggle boolean
       paused = false;
+      // Get time from when paused to current time
+      int elapsedPauseTime = millis()/1000 - pausedTime;
+      // Add paused time to startButtonTime to continue audio at correct position
+      startButtonTime += elapsedPauseTime;
+      // Increase rate of audio playback (unpause)
+      file.rate(0.5);
     } else {
+      // Stop draw loop
       noLoop();
+      // Toggle boolean
       paused = true;
+      // Get current time to calculate pausedTime
+      pausedTime = millis()/1000;
+      // Stop playback rate (pause audio)
+      file.rate(0);
     }//end else
   }//end if
 }//end keyReleased
